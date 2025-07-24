@@ -1,61 +1,60 @@
 import { FiPlus, FiTrash2, FiEdit } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
-import { CurrentUser } from '../lib/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { InsertCategories, GetAllData, DeleteData } from '../lib/accounts';
 
 const Categories = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  const { data: currentUser } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: CurrentUser,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  // const { data: currentUser } = useQuery({
+  //   queryKey: ['currentUser'],
+  //   queryFn: CurrentUser,
+  //   staleTime: 5 * 60 * 1000,
+  //   cacheTime: 10 * 60 * 1000,
+  //   refetchOnWindowFocus: false,
+  // });
 
-  const mutation = useMutation({
-    mutationFn: InsertCategories,
-    onSuccess: (data) => {
-      console.log('✅ Category inserted:', data);
-      // optionally clear form or refetch categories list
-    },
-    onError: (error) => {
-      console.error('❌ Error inserting category:', error.message);
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationFn: InsertCategories,
+  //   onSuccess: (data) => {
+  //     console.log('✅ Category inserted:', data);
+  //     // optionally clear form or refetch categories list
+  //   },
+  //   onError: (error) => {
+  //     console.error('❌ Error inserting category:', error.message);
+  //   },
+  // });
 
-  const { data: FilterData } = useQuery({
-    queryKey: ['categories', currentUser?.id],
-    queryFn: () => GetAllData({
-      TableName: 'categories',
-      ColName: 'userId',
-      ColValue: currentUser.id
-    }),
-    enabled: !!currentUser?.id,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  // const { data: FilterData } = useQuery({
+  //   queryKey: ['categories', currentUser?.id],
+  //   queryFn: () => GetAllData({
+  //     TableName: 'categories',
+  //     ColName: 'userId',
+  //     ColValue: currentUser.id
+  //   }),
+  //   enabled: !!currentUser?.id,
+  //   staleTime: 5 * 60 * 1000,
+  //   cacheTime: 10 * 60 * 1000,
+  //   refetchOnWindowFocus: false,
+  // });
 
-  useEffect(() => {
-    if (FilterData?.length > 0) {
-      setCategories(FilterData);
-    }
-  }, [FilterData]);
+  // useEffect(() => {
+  //   if (FilterData?.length > 0) {
+  //     setCategories(FilterData);
+  //   }
+  // }, [FilterData]);
 
 
   const [newCategory, setNewCategory] = useState({ name: '', budget: '', color: '#10B981' });
 
   const handleAddCategory = () => {
-    mutation.mutate({
-      Name: newCategory.name,
-      Budget: newCategory.budget,
-      Color: newCategory.color,
-      UserId: currentUser.id,
-    });
+    // mutation.mutate({
+    //   TableName : "categories",
+    //   Name: newCategory.name,
+    //   Budget: newCategory.budget,
+    //   Color: newCategory.color,
+    //   UserId: currentUser.id,
+    // });
 
     if (newCategory.name && newCategory.budget) {
       setCategories([...categories, { ...newCategory, id: Date.now() }]);
@@ -66,23 +65,23 @@ const Categories = () => {
 
 
 
-  const deleteMutation = useMutation({
-    mutationFn: ({ id }) =>
-      DeleteData({
-        TableName: 'categories',
-        ColName: 'id',
-        ColValue: id
-      }),
-    onSuccess: () => {
-      console.log('✅ Deleted successfully');
-      setCategories(categories.filter(cat => cat.id !== id));
+  // const deleteMutation = useMutation({
+  //   mutationFn: ({ id }) =>
+  //     DeleteData({
+  //       TableName: 'categories',
+  //       ColName: 'id',
+  //       ColValue: id
+  //     }),
+  //   onSuccess: () => {
+  //     console.log('✅ Deleted successfully');
+  //     setCategories(categories.filter(cat => cat.id !== id));
 
-      // queryClient.invalidateQueries(['categories']); // refetch list
-    },
-    onError: (error) => {
-      console.error('❌ Delete failed:', error.message);
-    },
-  });
+  //     // queryClient.invalidateQueries(['categories']); // refetch list
+  //   },
+  //   onError: (error) => {
+  //     console.error('❌ Delete failed:', error.message);
+  //   },
+  // });
 
   //   const handleDelete = (id) => {
   //     useMutation({

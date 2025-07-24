@@ -1,14 +1,15 @@
 import Sidebar from '../components/Sidebar';
-import { useAuth } from '../hooks/useAuth';
+// import { useContext } from 'react';
+// import { AuthContext } from '../context/userContext';
 import { Outlet } from 'react-router-dom';
-const DashboardLayout = ({ children }) => {
-  const { logout } = useAuth();
+
+const DashboardLayout = () => {
+  // const {user,token} = useContext(AuthContext);
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar logout={logout} />
+      <Sidebar />
       <div className="flex-1 overflow-auto">
-        {/* <main className="p-6">{children}</main> */}
         <main className="p-6"><Outlet /></main>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useAuth } from '../hooks/useAuth';
+// import { useAuth } from '../hooks/useAuth';
 import { FiUser, FiMail, FiLock, FiCreditCard, FiBell } from 'react-icons/fi';
 
 const schema = yup.object().shape({
@@ -15,14 +15,16 @@ const schema = yup.object().shape({
 });
 
 const Account = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: user?.name || '',
-      email: user?.email || ''
+      // name: user?.name || '',
+      // email: user?.email || ''
     }
   });
+
+
 
   const onSubmit = (data) => {
     console.log('Account updated:', data);
@@ -33,10 +35,10 @@ const Account = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Account Settings</h1>
-      
+
       <div className="bg-white p-6 rounded-lg shadow mb-6">
         <h2 className="text-xl font-semibold mb-6">Profile Information</h2>
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -80,7 +82,7 @@ const Account = () => {
 
           <div className="pt-4 border-t border-gray-200">
             <h3 className="text-lg font-medium mb-4">Change Password</h3>
-            
+
             <div className="mb-4">
               <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
                 Current Password
@@ -132,7 +134,7 @@ const Account = () => {
 
       <div className="bg-white p-6 rounded-lg shadow mb-6">
         <h2 className="text-xl font-semibold mb-6">Notification Preferences</h2>
-        
+
         <div className="space-y-4">
           <div className="flex items-center">
             <input
@@ -185,7 +187,7 @@ const Account = () => {
 
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-6">Payment Methods</h2>
-        
+
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
             <div className="flex items-center">

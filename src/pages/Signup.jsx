@@ -3,8 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FiUser, FiMail, FiLock } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-// import { useAuth } from '../hooks/useAuth';
-import { CreateUser, InsertUser } from '../lib/user';
+import { CreateUser } from '../lib/auth';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 
@@ -18,50 +17,44 @@ const schema = yup.object().shape({
 });
 
 const Signup = () => {
-  // const { register: registerUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
 
-
-
   const onSubmit = async (data) => {
 
     if (isLoading) return;
 
+    const FormData = {
+      email: data.email,
+      password: data.password,
+      username: data.name
+    }
+
     setIsLoading(true);
+
     try {
-      const data1 = await CreateUser({ Email: data.email, Password: data.password, Name: data.name })
-      try {
-        const response = await InsertUser({ Name: data1.user.user_metadata.name, Email: data1.user.email, UserID: data1.user.id })
-        console.log(response);
-        Swal.fire({
-          title: "SignUp Successfull!",
-          icon: "success",
-          draggable: true
-        });
+      const data = await CreateUser({ formData: FormData })
+      console.log(data.data.message);
 
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!"
-        });
-
-      } finally {
-        setIsLoading(false);
-        reset();
-      }
+      Swal.fire({
+        title: data.data.message,
+        icon: "success",
+        draggable: true
+      });
 
     } catch (error) {
+      console.log(error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Something went wrong!"
-
       });
 
+    } finally {
+      setIsLoading(false)
+      reset();
     }
 
   };
@@ -182,13 +175,6 @@ const Signup = () => {
                   'Sign up'
                 )}
               </button>
-              {/* <button
-                type="submit"
-
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-              >
-                Sign up
-              </button> */}
             </div>
           </form>
 

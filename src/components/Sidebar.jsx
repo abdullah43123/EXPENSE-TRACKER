@@ -162,6 +162,17 @@ const Sidebar = ({ logout }) => {
             </li>
             <li>
               <NavLink
+                to="/records"
+                className={({ isActive }) =>
+                  `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
+                }
+              >
+                <FiTag className="mr-3" />
+                Records
+              </NavLink>
+            </li>
+            {/* <li>
+              <NavLink
                 to="/categories"
                 className={({ isActive }) =>
                   `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
@@ -170,7 +181,7 @@ const Sidebar = ({ logout }) => {
                 <FiTag className="mr-3" />
                 Categories
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink
                 to="/account"

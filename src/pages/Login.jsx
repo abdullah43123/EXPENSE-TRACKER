@@ -2,12 +2,13 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FiMail, FiLock } from 'react-icons/fi';
+import { LoginUser } from '../lib/auth';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-// import { useAuth } from '../hooks/useAuth';
 import Swal from 'sweetalert2';
-import { SignInNewUser } from '../lib/user';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../context/userContext';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -15,32 +16,38 @@ const schema = yup.object().shape({
 });
 
 const Login = () => {
-  // const { login } = useAuth();
+  const { login } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
   let navigate = useNavigate();
   const onSubmit = async (data) => {
-    // login(data);
     if (isLoading) return;
 
+    const FormData = {
+      email: data.email,
+      password: data.password
+    }
+
     setIsLoading(true);
+
     try {
-      const response = await SignInNewUser({ Email: data.email, Password: data.password })
-      if (response) {
+      const data = await LoginUser({ formData: FormData });
+      console.log(data);
+      if (data) {
+        login(data.data.user.userId, data.data.token);
         Swal.fire({
           title: "Login Successfull!",
           icon: "success",
           draggable: true
         });
-        navigate('/')
 
+        navigate('/')
       }
 
     } catch (error) {
       console.log(error);
-
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -48,9 +55,10 @@ const Login = () => {
       });
 
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
       reset();
     }
+
   };
 
   return (

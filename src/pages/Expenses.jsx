@@ -1,15 +1,27 @@
 import { FiPlus, FiFilter, FiDownload } from 'react-icons/fi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ExpenseForm from '../components/ExpenseForm';
+import { useContext } from 'react';
+import { GetExpenseData } from '../lib/accounts';
+import { AuthContext } from '../context/userContext';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 
 const Expenses = () => {
-  const [expenses, setExpenses] = useState([
-    { id: 1, date: '2023-07-15', description: 'Grocery shopping', amount: 85.50, category: 'Food' },
-    { id: 2, date: '2023-07-14', description: 'Electric bill', amount: 120.00, category: 'Utilities' },
-    { id: 3, date: '2023-07-12', description: 'Movie tickets', amount: 28.00, category: 'Entertainment' },
-    { id: 4, date: '2023-07-10', description: 'Gasoline', amount: 45.30, category: 'Transport' },
-    { id: 5, date: '2023-07-08', description: 'Dinner out', amount: 65.80, category: 'Food' },
-  ]);
+  const { user, token } = useContext(AuthContext);
+  const [expenses, setExpenses] = useState([]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['expenses', user],
+    queryFn: () => GetExpenseData({ User: user }),
+    enabled: !!user,
+
+  });
+
+  useEffect(() => {
+    if (data?.data?.users) {
+      setExpenses(data.data.users);
+    }
+  }, [data])
 
   const [isAdding, setIsAdding] = useState(false);
   const [filters, setFilters] = useState({
@@ -18,10 +30,6 @@ const Expenses = () => {
     dateTo: ''
   });
 
-  const handleAddExpense = (expense) => {
-    setExpenses([...expenses, { ...expense, id: Date.now() }]);
-    setIsAdding(false);
-  };
 
   const filteredExpenses = expenses.filter(expense => {
     return (
@@ -36,24 +44,11 @@ const Expenses = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Expenses</h1>
-      
+
       <div className="bg-white p-6 rounded-lg shadow mb-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">Your Expenses</h2>
-          {/* <div className="flex space-x-3">
-            <button className="flex items-center px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">
-              <FiFilter className="mr-2" /> Filter
-            </button>
-            <button className="flex items-center px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">
-              <FiDownload className="mr-2" /> Export
-            </button>
-            <button
-              onClick={() => setIsAdding(true)}
-              className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
-            >
-              <FiPlus className="mr-2" /> Add Expense
-            </button>
-          </div> */}
+          {/* <button onClick={DataGrab}>Data</button> */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
             {/* Filter Button */}
             <button
@@ -84,10 +79,10 @@ const Expenses = () => {
 
         {isAdding && (
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <ExpenseForm 
-              onSave={handleAddExpense} 
-              onCancel={() => setIsAdding(false)} 
-              categories={categories}
+            <ExpenseForm
+              // setExpenses={setExpenses}
+              // expenses={expenses}
+              onCancel={() => setIsAdding(false)}
             />
           </div>
         )}
@@ -97,7 +92,7 @@ const Expenses = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select
               value={filters.category}
-              onChange={(e) => setFilters({...filters, category: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, category: e.target.value })}
               className="w-full p-2 border border-gray-300 rounded focus:ring-emerald-500 focus:border-emerald-500"
             >
               <option value="">All Categories</option>
@@ -111,7 +106,7 @@ const Expenses = () => {
             <input
               type="date"
               value={filters.dateFrom}
-              onChange={(e) => setFilters({...filters, dateFrom: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
               className="w-full p-2 border border-gray-300 rounded focus:ring-emerald-500 focus:border-emerald-500"
             />
           </div>
@@ -120,7 +115,7 @@ const Expenses = () => {
             <input
               type="date"
               value={filters.dateTo}
-              onChange={(e) => setFilters({...filters, dateTo: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
               className="w-full p-2 border border-gray-300 rounded focus:ring-emerald-500 focus:border-emerald-500"
             />
           </div>
@@ -138,7 +133,7 @@ const Expenses = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredExpenses.map((expense) => (
-                <tr key={expense.id}>
+                <tr key={expense._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(expense.date).toLocaleDateString()}
                   </td>

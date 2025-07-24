@@ -1,13 +1,29 @@
 import { FiPlus, FiFilter, FiDownload } from 'react-icons/fi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
+import { AuthContext } from '../context/userContext';
 import IncomeForm from '../components/IncomeForm';
-
+import { GetIncomeData } from '../lib/accounts';
+// import { CurrentUser } from '../lib/user';
+// import { GetAllData } from '../lib/accounts';
 const Income = () => {
-  const [income, setIncome] = useState([
-    { id: 1, date: '2023-07-30', description: 'Salary', amount: 3000.00, source: 'Job' },
-    { id: 2, date: '2023-07-15', description: 'Freelance work', amount: 500.00, source: 'Freelance' },
-    { id: 3, date: '2023-07-10', description: 'Dividends', amount: 120.50, source: 'Investments' },
-  ]);
+  const { user } = useContext(AuthContext)
+  const [income, setIncome] = useState([]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['expenses', user],
+    queryFn: () => GetIncomeData({ User: user }),
+    enabled: !!user,
+
+  });
+
+  useEffect(() => {
+    if (data?.data?.users) {
+      setIncome(data.data.users);
+    }
+  }, [data])
+
 
   const [isAdding, setIsAdding] = useState(false);
   const [filters, setFilters] = useState({
@@ -16,10 +32,6 @@ const Income = () => {
     dateTo: ''
   });
 
-  const handleAddIncome = (incomeItem) => {
-    setIncome([...income, { ...incomeItem, id: Date.now() }]);
-    setIsAdding(false);
-  };
 
   const filteredIncome = income.filter(item => {
     return (
@@ -38,20 +50,6 @@ const Income = () => {
       <div className="bg-white p-6 rounded-lg shadow mb-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">Your Income</h2>
-          {/* <div className="flex space-x-3">
-            <button className="flex items-center px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 ">
-              <FiFilter className="mr-2" /> Filter
-            </button>
-            <button className="flex items-center px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">
-              <FiDownload className="mr-2" /> Export
-            </button>
-            <button
-              onClick={() => setIsAdding(true)}
-              className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
-            >
-              <FiPlus className="mr-2" /> Add Income
-            </button>
-          </div> */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
             {/* Filter Button */}
             <button
@@ -61,7 +59,7 @@ const Income = () => {
               <span className=" xs:inline">Filter</span>
             </button>
 
-             {/* Export Button */}
+            {/* Export Button */}
             <button
               className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 text-sm sm:text-base"
             >
@@ -83,9 +81,7 @@ const Income = () => {
         {isAdding && (
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
             <IncomeForm
-              onSave={handleAddIncome}
               onCancel={() => setIsAdding(false)}
-              sources={sources}
             />
           </div>
         )}
@@ -136,7 +132,7 @@ const Income = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredIncome.map((item) => (
-                <tr key={item.id}>
+                <tr key={item._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(item.date).toLocaleDateString()}
                   </td>

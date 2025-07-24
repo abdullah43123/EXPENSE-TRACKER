@@ -2,6 +2,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FiX } from 'react-icons/fi';
+import { useContext } from 'react';
+import { AuthContext } from '../context/userContext';
+import { InsertExpenseData } from '../lib/accounts';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const expenseSchema = yup.object().shape({
   date: yup.date().required('Date is required'),
@@ -14,7 +18,9 @@ const expenseSchema = yup.object().shape({
   category: yup.string().required('Category is required'),
 });
 
-const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
+const ExpenseForm = ({ onCancel }) => {
+  const { user } = useContext(AuthContext);
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -24,16 +30,43 @@ const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
     resolver: yupResolver(expenseSchema),
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
-      category: categories[0] || '',
+      category: 'Food',
     },
   });
 
-  const onSubmit = (data) => {
-    onSave({
-      ...data,
-      amount: parseFloat(data.amount),
-    });
-    reset();
+  const mutation = useMutation({
+    mutationFn: InsertExpenseData,
+    onSuccess: (data) => {
+
+      queryClient.invalidateQueries(['expenses']);
+
+    },
+    onError: (error) => {
+      console.error('Insert failed:', error.message);
+    }
+  });
+  const onSubmit = async (data) => {
+    console.log(data);
+    const FormData = {
+      date: data.date,
+      amount: data.amount,
+      description: data.description,
+      category: data.category,
+      userId: user
+    }
+
+    try {
+
+      mutation.mutate({ formData: FormData });
+      // const data = await InsertExpenseData({ formData: FormData });
+      // console.log(data);
+      // setExpenses([...expenses, data.newExpense]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // window.location.reload();
+      reset();
+    }
   };
 
   return (
@@ -46,7 +79,6 @@ const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
       </button>
 
       <h3 className="text-xl font-semibold text-gray-800 mb-6">Add Expense</h3>
-
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -57,9 +89,8 @@ const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
               type="date"
               id="date"
               {...register('date')}
-              className={`w-full p-2 border ${
-                errors.date ? 'border-red-500' : 'border-gray-300'
-              } rounded focus:ring-emerald-500 focus:border-emerald-500`}
+              className={`w-full p-2 border ${errors.date ? 'border-red-500' : 'border-gray-300'
+                } rounded focus:ring-emerald-500 focus:border-emerald-500`}
             />
             {errors.date && (
               <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
@@ -73,15 +104,14 @@ const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
             <select
               id="category"
               {...register('category')}
-              className={`w-full p-2 border ${
-                errors.category ? 'border-red-500' : 'border-gray-300'
-              } rounded focus:ring-emerald-500 focus:border-emerald-500`}
+              className={`w-full p-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'
+                } rounded focus:ring-emerald-500 focus:border-emerald-500`}
             >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
+              <option value="Food">Food</option>
+              <option value="Utiities">Utiities</option>
+              <option value="Transport">Transport</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Other">Other</option>
             </select>
             {errors.category && (
               <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
@@ -97,9 +127,8 @@ const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
             type="text"
             id="description"
             {...register('description')}
-            className={`w-full p-2 border ${
-              errors.description ? 'border-red-500' : 'border-gray-300'
-            } rounded focus:ring-emerald-500 focus:border-emerald-500`}
+            className={`w-full p-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'
+              } rounded focus:ring-emerald-500 focus:border-emerald-500`}
             placeholder="Groceries, Rent, etc."
           />
           {errors.description && (
@@ -120,9 +149,8 @@ const ExpenseForm = ({ onSave, onCancel, categories = [] }) => {
               id="amount"
               step="0.01"
               {...register('amount')}
-              className={`w-full pl-8 p-2 border ${
-                errors.amount ? 'border-red-500' : 'border-gray-300'
-              } rounded focus:ring-emerald-500 focus:border-emerald-500`}
+              className={`w-full pl-8 p-2 border ${errors.amount ? 'border-red-500' : 'border-gray-300'
+                } rounded focus:ring-emerald-500 focus:border-emerald-500`}
               placeholder="0.00"
             />
           </div>
