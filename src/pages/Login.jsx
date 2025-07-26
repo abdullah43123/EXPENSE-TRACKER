@@ -43,7 +43,7 @@ const Login = () => {
           draggable: true
         });
 
-        navigate('/')
+        navigate('/dashboard')
       }
 
     } catch (error) {

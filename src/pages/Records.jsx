@@ -11,6 +11,7 @@ const Records = () => {
     const { user } = useContext(AuthContext);
     const [staticExpenses, setStaticExpenses] = useState([])
     const [staticIncomes, setStaticIncomes] = useState([])
+    const [monthlyData, setMonthlyData] = useState([]);
 
     const { data } = useQuery({
         queryKey: ['expenses', user],
@@ -35,44 +36,21 @@ const Records = () => {
         if (IncomeData?.data?.users) {
             const formattedIncomes = IncomeData.data.users.map(income => ({
                 ...income,
-                date: income.date.split('T')[0] // Extracts just the YYYY-MM-DD part
+                date: income.date.split('T')[0]
             }));
             setStaticIncomes(formattedIncomes);
         }
     }, [data, IncomeData])
 
-    // useEffect(() => {
+    useEffect(() => {
+        MonthData()
+    }, [staticExpenses, staticIncomes])
 
-    //     if (data?.data?.users) {
-    //         setStaticExpenses(data.data.users);
-    //     }
-    //     if (IncomeData?.data?.users) {
-    //         setStaticIncomes(IncomeData.data.users)
-    //     }
-    // }, [data])
-
-    function HelloBeta() {
-        const expensesCharts = filteredIncomes.map(income => {
-            let amount = 0;
-            console.log(income.amount);
-            amount += income.amount;
-            console.log(amount);
-
-
-
-        }, [])
-        // const hello = data?.data?.users.map(expense => {
-        //     let AfterChangingDate = expense.date.slice(0, 10);
-        //     console.log(AfterChangingDate);
-
-        // })
-        // console.log(staticExpenses);
-        // console.log(staticIncomes);
-        // console.log(hello);
-
-
+    function MonthData() {
+        const monthlyData1 = generateMonthlySummary(staticExpenses, staticIncomes)
+        console.log(monthlyData1);
+        setMonthlyData(monthlyData1)
     }
-
 
     const [activeTab, setActiveTab] = useState('expenses');
     const [showFilter, setShowFilter] = useState(false);
@@ -111,13 +89,53 @@ const Records = () => {
         return acc;
     }, []);
 
+    function generateMonthlySummary(expenses, incomes) {
+        // Create a map to store monthly data
+        const monthlySummary = new Map();
 
+        // Process expenses
+        expenses.forEach(expense => {
+            const date = new Date(expense.date);
+            const monthYear = date.toLocaleString('default', { month: 'short' }); // e.g. "Jul"
 
-    const monthlyData = [
-        { name: 'Jul', expenses: 275, incomes: 3500 },
-        { name: 'Aug', expenses: 935, incomes: 3150 },
-    ];
+            if (!monthlySummary.has(monthYear)) {
+                monthlySummary.set(monthYear, {
+                    name: monthYear,
+                    expenses: 0,
+                    incomes: 0
+                });
+            }
 
+            const monthData = monthlySummary.get(monthYear);
+            monthData.expenses += expense.amount;
+        });
+
+        // Process incomes
+        incomes.forEach(income => {
+            const date = new Date(income.date);
+            const monthYear = date.toLocaleString('default', { month: 'short' }); // e.g. "Jul"
+
+            if (!monthlySummary.has(monthYear)) {
+                monthlySummary.set(monthYear, {
+                    name: monthYear,
+                    expenses: 0,
+                    incomes: 0
+                });
+            }
+
+            const monthData = monthlySummary.get(monthYear);
+            monthData.incomes += income.amount;
+        });
+
+        // Convert map to array and sort by date
+        const result = Array.from(monthlySummary.values());
+        result.sort((a, b) => {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months.indexOf(a.name) - months.indexOf(b.name);
+        });
+
+        return result;
+    }
     const COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
     return (
@@ -134,7 +152,6 @@ const Records = () => {
                     >
                         <FiFilter className="mr-2" /> {showFilter ? 'Hide Filter' : 'Show Filter'}
                     </button>
-                    <button onClick={HelloBeta}>Hello</button>
                 </div>
 
                 {showFilter && (

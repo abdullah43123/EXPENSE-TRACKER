@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Categories from './pages/Categories';
@@ -9,40 +9,39 @@ import Signup from './pages/Signup';
 import Income from './pages/Income';
 import Records from './pages/Records';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useContext } from 'react';
+import { AuthContext } from './context/userContext';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function App() {
+  const { user } = useContext(AuthContext);
 
   return (
-
     <QueryClientProvider client={queryClient}>
-      {/* <BrowserRouter> */}
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="expenses" element={<Expenses />} />
-            <Route path="income" element={<Income />} />
-            <Route path="categories" element={<Categories />} />
-            <Route path="account" element={<Account />} />
-            <Route path="records" element={<Records />} />
-          </Route>
-          {/* <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-        <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
-        <Route path="/" element={user ? <DashboardLayout /> : <Navigate to="/login" />}>
-          <Route index element={<Dashboard />} />
-          <Route path="expenses" element={<Expenses />} />
-          <Route path="income" element={<Income />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="categories" element={<Categories />} />
-          <Route path="account" element={<Account />} />
-        </Route> */}
+          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <Signup />} />
+
+          {user ? (
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="expenses" element={<Expenses />} />
+              <Route path="income" element={<Income />} />
+              <Route path="categories" element={<Categories />} />
+              <Route path="account" element={<Account />} />
+              <Route path="records" element={<Records />} />
+            </Route>
+          ) : (
+            <Route path="/dashboard/*" element={<Navigate to="/login" />} />
+          )}
+
+          <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>
+
       </Router>
-      {/* </BrowserRouter> */}
     </QueryClientProvider>
   );
 }

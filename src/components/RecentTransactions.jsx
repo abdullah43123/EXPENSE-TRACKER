@@ -19,8 +19,8 @@ const RecentTransactions = ({ transactions }) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {transactions.map((transaction) => (
-            <tr key={transaction.id}>
+          {transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6).map((transaction) => (
+            <tr key={transaction._id}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {transaction.description}
               </td>

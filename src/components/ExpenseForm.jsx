@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/userContext';
 import { InsertExpenseData } from '../lib/accounts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 const expenseSchema = yup.object().shape({
   date: yup.date().required('Date is required'),
@@ -42,11 +43,15 @@ const ExpenseForm = ({ onCancel }) => {
 
     },
     onError: (error) => {
-      console.error('Insert failed:', error.message);
+      Swal.fire({
+        title: `${error.message}`,
+        icon: "error",
+        draggable: true
+      });
+
     }
   });
   const onSubmit = async (data) => {
-    console.log(data);
     const FormData = {
       date: data.date,
       amount: data.amount,
@@ -56,16 +61,21 @@ const ExpenseForm = ({ onCancel }) => {
     }
 
     try {
-
       mutation.mutate({ formData: FormData });
-      // const data = await InsertExpenseData({ formData: FormData });
-      // console.log(data);
-      // setExpenses([...expenses, data.newExpense]);
+      Swal.fire({
+        title: "Expense Added",
+        icon: "success",
+        draggable: true
+      });
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "Error",
+        icon: "error",
+        draggable: true
+      });
     } finally {
-      // window.location.reload();
       reset();
+      onCancel();
     }
   };
 
@@ -108,7 +118,7 @@ const ExpenseForm = ({ onCancel }) => {
                 } rounded focus:ring-emerald-500 focus:border-emerald-500`}
             >
               <option value="Food">Food</option>
-              <option value="Utiities">Utiities</option>
+              <option value="Utiities">Utilities</option>
               <option value="Transport">Transport</option>
               <option value="Entertainment">Entertainment</option>
               <option value="Other">Other</option>

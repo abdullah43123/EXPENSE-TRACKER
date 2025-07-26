@@ -1,108 +1,3 @@
-// import { NavLink } from 'react-router-dom';
-// import {
-//   FiHome,
-//   FiDollarSign,
-//   FiTrendingUp,
-//   FiPieChart,
-//   FiTag,
-//   FiUser,
-//   FiLogOut
-// } from 'react-icons/fi';
-
-// const Sidebar = ({ logout }) => {
-//   return (
-//     <div className="w-64 bg-emerald-700 text-white p-4 flex flex-col">
-//       <div className="mb-8 p-4">
-//         <h1 className="text-2xl font-bold">Track Expenses</h1>
-//         <p className="text-emerald-200">Personal Finance</p>
-//       </div>
-
-//       <nav className="flex-1">
-//         <ul className="space-y-2">
-//           <li>
-//             <NavLink
-//               to="/"
-//               className={({ isActive }) =>
-//                 `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-//               }
-//             >
-//               <FiHome className="mr-3" />
-//               Dashboard
-//             </NavLink>
-//           </li>
-//           <li>
-//             <NavLink
-//               to="/expenses"
-//               className={({ isActive }) =>
-//                 `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-//               }
-//             >
-//               <FiDollarSign className="mr-3" />
-//               Expenses
-//             </NavLink>
-//           </li>
-//           <li>
-//             <NavLink
-//               to="/income"
-//               className={({ isActive }) =>
-//                 `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-//               }
-//             >
-//               <FiTrendingUp className="mr-3" />
-//               Income
-//             </NavLink>
-//           </li>
-//           <li>
-//             <NavLink
-//               to="/reports"
-//               className={({ isActive }) =>
-//                 `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-//               }
-//             >
-//               <FiPieChart className="mr-3" />
-//               Reports
-//             </NavLink>
-//           </li>
-//           <li>
-//             <NavLink
-//               to="/categories"
-//               className={({ isActive }) =>
-//                 `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-//               }
-//             >
-//               <FiTag className="mr-3" />
-//               Categories
-//             </NavLink>
-//           </li>
-//           <li>
-//             <NavLink
-//               to="/account"
-//               className={({ isActive }) =>
-//                 `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-//               }
-//             >
-//               <FiUser className="mr-3" />
-//               Account
-//             </NavLink>
-//           </li>
-//         </ul>
-//       </nav>
-
-//       <button
-//         onClick={logout}
-//         className="flex items-center p-3 text-emerald-200 hover:text-white hover:bg-emerald-600 rounded-lg transition-colors"
-//       >
-//         <FiLogOut className="mr-3" />
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-
-/////////////////////////////////////////////////////////////////////////////////////
-
 import { NavLink } from 'react-router-dom';
 import {
   FiHome,
@@ -115,6 +10,8 @@ import {
 } from 'react-icons/fi';
 
 const Sidebar = ({ logout }) => {
+  // console.log(isActive);
+
   return (
     <>
       {/* Desktop Sidebar (Left) */}
@@ -128,19 +25,20 @@ const Sidebar = ({ logout }) => {
           <ul className="space-y-2">
             <li>
               <NavLink
-                to="/"
+                to="/dashboard"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800/80' : 'hover:bg-emerald-600/80'}`
+                  `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800/80 ' : 'hover:bg-emerald-600/80'}`
                 }
               >
                 <FiHome className="mr-3" />
-                <span className="hidden md:inline">Dashboard</span>
+                Dashboard
+                {/* <span className="hidden md:inline">Dashboard</span> */}
               </NavLink>
             </li>
 
             <li>
               <NavLink
-                to="/expenses"
+                to="expenses"
                 className={({ isActive }) =>
                   `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
                 }
@@ -151,7 +49,7 @@ const Sidebar = ({ logout }) => {
             </li>
             <li>
               <NavLink
-                to="/income"
+                to="income"
                 className={({ isActive }) =>
                   `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
                 }
@@ -162,7 +60,7 @@ const Sidebar = ({ logout }) => {
             </li>
             <li>
               <NavLink
-                to="/records"
+                to="records"
                 className={({ isActive }) =>
                   `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
                 }
@@ -171,20 +69,9 @@ const Sidebar = ({ logout }) => {
                 Records
               </NavLink>
             </li>
-            {/* <li>
-              <NavLink
-                to="/categories"
-                className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
-                }
-              >
-                <FiTag className="mr-3" />
-                Categories
-              </NavLink>
-            </li> */}
             <li>
               <NavLink
-                to="/account"
+                to="account"
                 className={({ isActive }) =>
                   `flex items-center p-3 rounded-lg transition-colors ${isActive ? 'bg-emerald-800' : 'hover:bg-emerald-600'}`
                 }
@@ -211,7 +98,7 @@ const Sidebar = ({ logout }) => {
       <div className="fixed md:hidden bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg dark:bg-gray-800/80 border-t border-gray-200 dark:border-gray-700 z-50">
         <div className="flex justify-around items-center p-2">
           <NavLink
-            to="/"
+            to="/dashboard"
             className={({ isActive }) =>
               `flex flex-col items-center p-2 rounded-lg transition-colors ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400'}`
             }
@@ -221,7 +108,7 @@ const Sidebar = ({ logout }) => {
           </NavLink>
 
           <NavLink
-            to="/expenses"
+            to="expenses"
             className={({ isActive }) =>
               `flex flex-col items-center p-2 rounded-lg transition-colors ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400'}`
             }
@@ -231,7 +118,7 @@ const Sidebar = ({ logout }) => {
           </NavLink>
 
           <NavLink
-            to="/income"
+            to="income"
             className={({ isActive }) =>
               `flex flex-col items-center p-2 rounded-lg transition-colors ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400'}`
             }
@@ -248,16 +135,16 @@ const Sidebar = ({ logout }) => {
             </button>
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-white/90 dark:bg-gray-700/90 backdrop-blur-md rounded-lg shadow-lg p-2 w-40">
               <NavLink
-                to="/categories"
+                to="records"
                 className={({ isActive }) =>
                   `flex items-center p-2 rounded transition-colors ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'}`
                 }
               >
                 <FiTag className="mr-2 h-4 w-4" />
-                <span>Categories</span>
+                <span>Records</span>
               </NavLink>
               <NavLink
-                to="/account"
+                to="account"
                 className={({ isActive }) =>
                   `flex items-center p-2 rounded transition-colors ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'}`
                 }

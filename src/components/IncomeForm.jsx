@@ -33,7 +33,6 @@ const IncomeForm = ({ onCancel }) => {
     resolver: yupResolver(incomeSchema),
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
-      // source: sources[0] || '',
       source: "Salary"
     },
   });
@@ -46,12 +45,15 @@ const IncomeForm = ({ onCancel }) => {
 
     },
     onError: (error) => {
-      console.error('Insert failed:', error.message);
+      Swal.fire({
+        title: `${error.message}`,
+        icon: "error",
+        draggable: true
+      });
     }
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     const FormData = {
       date: data.date,
       description: data.description,
@@ -61,8 +63,17 @@ const IncomeForm = ({ onCancel }) => {
     };
     try {
       mutation.mutate({ formData: FormData });
+      Swal.fire({
+        title: "Income Added",
+        icon: "success",
+        draggable: true
+      });
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "Error",
+        icon: "error",
+        draggable: true
+      });
     } finally {
       reset();
       onCancel();
@@ -111,11 +122,6 @@ const IncomeForm = ({ onCancel }) => {
               <option value="Bonus">Bonus</option>
               <option value="Commission">Commission</option>
               <option value="Other">Other</option>
-              {/* {sources.map((source) => (
-                <option key={source} value={source}>
-                  {source}
-                </option>
-              ))} */}
             </select>
             {errors.source && (
               <p className="mt-1 text-sm text-red-600">{errors.source.message}</p>

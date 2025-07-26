@@ -6,6 +6,7 @@ import { GetExpenseData } from '../lib/accounts';
 import { AuthContext } from '../context/userContext';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 
+
 const Expenses = () => {
   const { user, token } = useContext(AuthContext);
   const [expenses, setExpenses] = useState([]);
