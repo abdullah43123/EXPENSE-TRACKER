@@ -3,7 +3,7 @@ import axios from "axios"
 export const LoginUser = async ({ formData }) => {
     try {
         // const res = await axios.post('http://localhost:5000/auth/login', formData)
-        const res = await axios.post('expense-tracker-backend-production-f9ad.up.railway.app/auth/login', formData)
+        const res = await axios.post('https://expense-tracker-backend-production-f9ad.up.railway.app//auth/login', formData)
         console.log(res);
         return res;
 

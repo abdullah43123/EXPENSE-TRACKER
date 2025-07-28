@@ -3,7 +3,9 @@ import axios from "axios"
 export const InsertExpenseData = async ({ formData }) => {
     try {
         const data = await axios.post('expense-tracker-backend-production-f9ad.up.railway.app/auth/insertExpense', formData);
+        
         // const data = await axios.post('http://localhost:5000/auth/insertExpense', formData);
+
         console.log(data);
         return data;
 
