@@ -3,7 +3,7 @@ import axios from "axios"
 export const LoginUser = async ({ formData }) => {
     try {
         // const res = await axios.post('http://localhost:5000/auth/login', formData)
-        const res = await axios.post('https://expense-tracker-backend-production-f9ad.up.railway.app/auth/login', formData, { timeout: 10000 })
+        const res = await axios.post('https://expense-tracker-backend-production-bfa1.up.railway.app/auth/login', formData, { withCredentials: true, timeout: 10000 })
         console.log(res);
         return res;
 
@@ -16,7 +16,7 @@ export const LoginUser = async ({ formData }) => {
 export const CreateUser = async ({ formData }) => {
     try {
         // const res = await axios.post('http://localhost:5000/auth/register', formData)
-        const res = await axios.post('https://expense-tracker-backend-production-f9ad.up.railway.app/auth/register', formData)
+        const res = await axios.post('https://expense-tracker-backend-production-bfa1.up.railway.app/auth/register', formData)
         console.log(res);
         return res;
 
@@ -28,7 +28,7 @@ export const CreateUser = async ({ formData }) => {
 
 export const InsertSession = async ({ formData }) => {
     try {
-        const res = await axios.post('https://expense-tracker-backend-production-f9ad.up.railway.app/auth/session', formData)
+        const res = await axios.post('https://expense-tracker-backend-production-bfa1.up.railway.app/auth/session', formData)
         // const res = await axios.post('http://localhost:5000/auth/session', formData)
         console.log(res);
         return res;
@@ -44,7 +44,7 @@ export const GetSession = async ({ Token }) => {
 
     try {
         // const res = await axios.get(`http://localhost:5000/auth/getSession/${Token}`);
-        const res = await axios.get(`https://expense-tracker-backend-production-f9ad.up.railway.app/${Token}`);
+        const res = await axios.get(`https://expense-tracker-backend-production-bfa1.up.railway.app/${Token}`);
         // console.log(res);
         return res;
 
