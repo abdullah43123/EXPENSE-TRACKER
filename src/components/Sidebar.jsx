@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 import {
   FiHome,
   FiDollarSign,
@@ -11,6 +12,21 @@ import {
 
 const Sidebar = ({ logout }) => {
   // console.log(isActive);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
 
   return (
     <>
@@ -32,7 +48,6 @@ const Sidebar = ({ logout }) => {
               >
                 <FiHome className="mr-3" />
                 Dashboard
-                {/* <span className="hidden md:inline">Dashboard</span> */}
               </NavLink>
             </li>
 
@@ -127,8 +142,62 @@ const Sidebar = ({ logout }) => {
             <span className="text-xs mt-1">Income</span>
           </NavLink>
 
+          <div className="relative" ref={dropdownRef}>
+            <button
+              className="flex flex-col items-center p-2 rounded-lg text-gray-600 dark:text-gray-400"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-expanded={isOpen}
+              aria-haspopup="true"
+            >
+              <FiUser className="h-5 w-5" />
+              <span className="text-xs mt-1">More</span>
+            </button>
 
-          <div className="relative group">
+            {/* Dropdown menu - now controlled by isOpen state */}
+            <div
+              className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 ${isOpen ? 'block' : 'hidden'
+                } bg-white/90 dark:bg-gray-700/90 backdrop-blur-md rounded-lg shadow-lg p-2 w-40 z-10`}
+            >
+              <NavLink
+                to="records"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded transition-colors ${isActive
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FiTag className="mr-2 h-4 w-4" />
+                <span>Records</span>
+              </NavLink>
+              <NavLink
+                to="account"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded transition-colors ${isActive
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FiUser className="mr-2 h-4 w-4" />
+                <span>Account</span>
+              </NavLink>
+              <button
+                onClick={() => {
+                  logout();
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full p-2 rounded text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600"
+              >
+                <FiLogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+
+          {/* <div className="relative group">
             <button className="flex flex-col items-center p-2 rounded-lg text-gray-600 dark:text-gray-400">
               <FiUser className="h-5 w-5" />
               <span className="text-xs mt-1">More</span>
@@ -160,7 +229,7 @@ const Sidebar = ({ logout }) => {
                 <span>Logout</span>
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
