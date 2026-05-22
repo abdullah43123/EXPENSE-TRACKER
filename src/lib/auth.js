@@ -15,6 +15,7 @@ export const LoginUser = async ({ formData }) => {
 
 export const CreateUser = async ({ formData }) => {
     try {
+        console.log(formData)
         // const res = await axios.post('http://localhost:5000/auth/register', formData)
         const res = await axios.post('https://expense-tracker-backend-tau-lovat.vercel.app/auth/register', formData)
         // const res = await axios.post('https://expense-tracker-backend-production-bfa1.up.railway.app/auth/register', formData)
